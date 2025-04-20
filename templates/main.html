@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecommerce Recommendation System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #001F3F;
+            color: white;
+        }
+        .navbar {
+            background-color: #001F3F;
+        }
+        .navbar-brand img {
+            height: 40px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .btn-primary {
+            background-color: #FFDC00;
+            border-color: #FFDC00;
+            color: black;
+        }
+        .btn-outline-primary {
+            border-color: #FFDC00;
+            color: #FFDC00;
+        }
+        .btn-outline-primary:hover {
+            background-color: #FFDC00;
+            color: black;
+        }
+        .search-bar {
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">
+        <img src="static/logo.jpg" alt="Smart Shop Logo"> Smart Shop AI
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="index">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="trending">Trending</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn btn-outline-primary mr-2" href="#" data-toggle="modal" data-target="#signupModal">Sign Up</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link btn btn-primary text-white" href="#" data-toggle="modal" data-target="#signinModal">Sign In</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Sign Up Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">Sign Up</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="/signup">
+                    <div class="form-group">
+                        <label for="signupEmail">Email address</label>
+                        <input type="email" class="form-control" id="signupEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" class="form-control" id="signupPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sign In Modal -->
+<div class="modal fade" id="signinModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+                <h5 class="modal-title">Sign In</h5>
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="/signin">
+                    <div class="form-group">
+                        <label for="signinEmail">Email address</label>
+                        <input type="email" class="form-control" id="signinEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signinPassword">Password</label>
+                        <input type="password" class="form-control" id="signinPassword" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Section -->
+<div class="container">
+    <h1 class="text-center my-4">Ecommerce Recommendation System</h1>
+
+    <!-- Search + Filter Form -->
+    <form method="POST" action="/recommendations">
+        <div class="row justify-content-center search-bar">
+            <div class="col-md-6">
+                <div class="input-group mb-3">
+                    <input type="text" name="prod" class="form-control" placeholder="Search for products..." required>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" name="nbr" id="itemCountFilter">
+                    <option value="4" {% if selected_count == 4 %}selected{% endif %}>Show 4 items</option>
+                    <option value="8" {% if selected_count == 8 %}selected{% endif %}>Show 8 items</option>
+                    <option value="12" {% if selected_count == 12 %}selected{% endif %}>Show 12 items</option>
+                    <option value="16" {% if selected_count == 16 %}selected{% endif %}>Show 16 items</option>
+                </select>
+            </div>
+        </div>
+    </form>
+
+    <!-- Display Recommended Products -->
+    <div class="row" id="productContainer">
+        {% if product_data %}
+            {% for product, image, price in product_data %}
+                <div class="col-md-3 mb-4 product-card">
+                    <div class="card bg-light text-dark">
+                        <img src="{{ image }}" class="card-img-top" alt="Product Image">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ truncate(product[1]['Name']) }}</h5>
+                            <p class="card-text">Brand: {{ product[1]['Brand'] }}<br>Reviews: {{ product[1]['ReviewCount'] }}</p>
+                            <p class="card-text">Price: ₹{{ price }}</p>
+                            <button class="btn btn-primary btn-block">Buy Now</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-md-12 text-center">
+                <p>No recommendations yet. Try searching above.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Bootstrap Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

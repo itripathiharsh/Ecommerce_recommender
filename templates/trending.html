@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trending Products</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <style>
+    body {
+      background-color: #001F3F;
+      color: white;
+    }
+    .product-card {
+      background-color: #012A5F;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .product-card img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 15px;
+      border-radius: 5px;
+    }
+    .btn-buy {
+      background-color: #FFDC00;
+      border: none;
+      color: black;
+    }
+    .btn-buy:hover {
+      background-color: #e0c200;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container my-5">
+  <h1 class="text-center mb-4">🔥 Trending Products</h1>
+  <div class="row">
+    {% for i in range(trending_products|length) %}
+      <div class="col-md-3">
+        <div class="product-card">
+          <img src="{{ image_urls[i] }}" alt="Product Image">
+          <h5>{{ trending_products[i]['Name'] }}</h5>
+          <p><strong>Brand:</strong> {{ trending_products[i]['Brand'] }}</p>
+          <p><strong>Price:</strong> ₹{{ prices[i] }}</p>
+          <button class="btn btn-buy btn-block mt-2">Buy Now</button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+</body>
+</html>
